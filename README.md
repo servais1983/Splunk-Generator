@@ -21,6 +21,8 @@ A professional web-based tool for generating Splunk Search Processing Language (
 
 *Screenshot showing the main interface with template selection, filter configuration, and generated SPL command display.*
 
+**Note**: Please add a screenshot of the application interface to the `screenshot.png` file to complete the documentation.
+
 ## Installation
 
 ### Quick Start
