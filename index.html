@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Splunk SPL Command Generator</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="styles.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container-fluid">
+        <header class="bg-primary text-white py-4 mb-4">
+            <div class="container">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center">
+                        <button type="button" id="themeToggle" class="btn btn-outline-light btn-sm me-3">
+                            <i class="fas fa-moon" id="themeIcon"></i>
+                        </button>
+                        <button type="button" id="saveConfig" class="btn btn-outline-light btn-sm me-2" title="Save Configuration">
+                            <i class="fas fa-save"></i>
+                        </button>
+                        <button type="button" id="loadConfig" class="btn btn-outline-light btn-sm me-2" title="Load Configuration">
+                            <i class="fas fa-folder-open"></i>
+                        </button>
+                    </div>
+                    <div class="text-center">
+                        <h1 class="mb-0">
+                            <i class="fas fa-search me-3"></i>
+                            Splunk SPL Command Generator
+                        </h1>
+                        <p class="mb-0 mt-2">Professional SPL command builder for Splunk Cloud</p>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <button type="button" id="showHistory" class="btn btn-outline-light btn-sm me-2" title="Command History">
+                            <i class="fas fa-history"></i>
+                        </button>
+                        <button type="button" id="showHelp" class="btn btn-outline-light btn-sm" title="Help & Documentation">
+                            <i class="fas fa-question-circle"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="container">
+            <div class="row">
+                <!-- Command Builder Panel -->
+                <div class="col-lg-8">
+                    <div class="card shadow-sm mb-4">
+                        <div class="card-header bg-light">
+                            <h5 class="mb-0">
+                                <i class="fas fa-cogs me-2"></i>
+                                Command Builder
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <!-- Search Command -->
+                            <div class="mb-4">
+                                <label class="form-label fw-bold">Search Command</label>
+                                <select id="searchCommand" class="form-select">
+                                    <option value="search">search</option>
+                                    <option value="tstats">tstats</option>
+                                    <option value="stats">stats</option>
+                                    <option value="eval">eval</option>
+                                    <option value="where">where</option>
+                                    <option value="table">table</option>
+                                    <option value="fields">fields</option>
+                                    <option value="sort">sort</option>
+                                    <option value="head">head</option>
+                                    <option value="tail">tail</option>
+                                    <option value="dedup">dedup</option>
+                                    <option value="rename">rename</option>
+                                    <option value="rex">rex</option>
+                                    <option value="replace">replace</option>
+                                    <option value="lookup">lookup</option>
+                                    <option value="join">join</option>
+                                    <option value="append">append</option>
+                                    <option value="union">union</option>
+                                    <option value="multisearch">multisearch</option>
+                                </select>
+                            </div>
+
+                            <!-- Index/Source -->
+                            <div class="row mb-4">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">Index</label>
+                                    <select id="indexSelect" class="form-select">
+                                        <option value="">All indexes</option>
+                                        <option value="_internal">_internal</option>
+                                        <option value="_audit">_audit</option>
+                                        <option value="main">main</option>
+                                        <option value="security">security</option>
+                                        <option value="performance">performance</option>
+                                        <option value="network">network</option>
+                                        <option value="web">web</option>
+                                        <option value="email">email</option>
+                                        <option value="database">database</option>
+                                        <option value="application">application</option>
+                                        <option value="custom">Custom...</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">Source Type</label>
+                                    <select id="sourcetypeSelect" class="form-select">
+                                        <option value="">All source types</option>
+                                        <option value="access_combined">access_combined</option>
+                                        <option value="access_combined_wcookie">access_combined_wcookie</option>
+                                        <option value="cisco_syslog">cisco_syslog</option>
+                                        <option value="splunkd">splunkd</option>
+                                        <option value="splunkd_access">splunkd_access</option>
+                                        <option value="splunk_web_access">splunk_web_access</option>
+                                        <option value="web_access">web_access</option>
+                                        <option value="web_error">web_error</option>
+                                        <option value="windows_syslog">windows_syslog</option>
+                                        <option value="linux_syslog">linux_syslog</option>
+                                        <option value="json">json</option>
+                                        <option value="csv">csv</option>
+                                        <option value="xml">xml</option>
+                                        <option value="custom">Custom...</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Time Range -->
+                            <div class="row mb-4">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">Time Range</label>
+                                    <select id="timeRange" class="form-select">
+                                        <option value="earliest=-15m latest=now">Last 15 minutes</option>
+                                        <option value="earliest=-1h latest=now">Last hour</option>
+                                        <option value="earliest=-4h latest=now">Last 4 hours</option>
+                                        <option value="earliest=-24h latest=now">Last 24 hours</option>
+                                        <option value="earliest=-7d latest=now">Last 7 days</option>
+                                        <option value="earliest=-30d latest=now">Last 30 days</option>
+                                        <option value="earliest=@d latest=now">Today</option>
+                                        <option value="earliest=@w latest=now">This week</option>
+                                        <option value="earliest=@mon latest=now">This month</option>
+                                        <option value="earliest=@y latest=now">This year</option>
+                                        <option value="earliest=-1y latest=now">Last year</option>
+                                        <option value="earliest=all latest=now">All time</option>
+                                        <option value="earliest=-2h latest=now">Last 2 hours</option>
+                                        <option value="earliest=-6h latest=now">Last 6 hours</option>
+                                        <option value="earliest=-12h latest=now">Last 12 hours</option>
+                                        <option value="earliest=-2d latest=now">Last 2 days</option>
+                                        <option value="earliest=-3d latest=now">Last 3 days</option>
+                                        <option value="earliest=-14d latest=now">Last 14 days</option>
+                                        <option value="earliest=-60d latest=now">Last 60 days</option>
+                                        <option value="earliest=-90d latest=now">Last 90 days</option>
+                                        <option value="earliest=-180d latest=now">Last 180 days</option>
+                                        <option value="earliest=-365d latest=now">Last 365 days</option>
+                                        <option value="custom">Custom time range...</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">Search String</label>
+                                    <input type="text" id="searchString" class="form-control" placeholder="Enter search terms, field filters, etc.">
+                                </div>
+                            </div>
+
+                            <!-- Custom Time Range (hidden by default) -->
+                            <div class="row mb-4" id="customTimeRange" style="display: none;">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">Custom Time Range</label>
+                                    <input type="text" id="customTimeInput" class="form-control" placeholder="Example: earliest=2024-01-15 09:00:00 latest=2024-01-15 17:00:00">
+                                    <small class="form-text text-muted">Format: earliest=YYYY-MM-DD HH:MM:SS latest=YYYY-MM-DD HH:MM:SS</small>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">Quick Time Examples</label>
+                                    <div class="d-grid gap-1">
+                                        <button type="button" class="btn btn-outline-secondary btn-sm quick-time" data-time="earliest=@d latest=now">Today</button>
+                                        <button type="button" class="btn btn-outline-secondary btn-sm quick-time" data-time="earliest=@w latest=now">This Week</button>
+                                        <button type="button" class="btn btn-outline-secondary btn-sm quick-time" data-time="earliest=@mon latest=now">This Month</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Filters -->
+                            <div class="mb-4">
+                                <label class="form-label fw-bold">Filters</label>
+                                <div id="filtersContainer">
+                                    <div class="filter-row row mb-2">
+                                        <div class="col-md-3">
+                                            <select class="form-select filter-field">
+                                                <option value="">Select field...</option>
+                                                <!-- Network & IP Fields -->
+                                                <option value="clientip">clientip</option>
+                                                <option value="src_ip">src_ip</option>
+                                                <option value="dst_ip">dst_ip</option>
+                                                <option value="src_port">src_port</option>
+                                                <option value="dst_port">dst_port</option>
+                                                <option value="protocol">protocol</option>
+                                                <option value="host">host</option>
+                                                <option value="source">source</option>
+                                                <option value="sourcetype">sourcetype</option>
+                                                <option value="index">index</option>
+                                                
+                                                <!-- Web & Application Fields -->
+                                                <option value="status">status</option>
+                                                <option value="method">method</option>
+                                                <option value="uri_path">uri_path</option>
+                                                <option value="user_agent">user_agent</option>
+                                                <option value="response_time">response_time</option>
+                                                <option value="bytes">bytes</option>
+                                                <option value="referer">referer</option>
+                                                <option value="url">url</option>
+                                                <option value="request_uri">request_uri</option>
+                                                
+                                                <!-- User & Authentication Fields -->
+                                                <option value="user">user</option>
+                                                <option value="username">username</option>
+                                                <option value="user_id">user_id</option>
+                                                <option value="session_id">session_id</option>
+                                                <option value="auth_user">auth_user</option>
+                                                <option value="login_user">login_user</option>
+                                                
+                                                <!-- Security & Event Fields -->
+                                                <option value="action">action</option>
+                                                <option value="event_id">event_id</option>
+                                                <option value="event_type">event_type</option>
+                                                <option value="severity">severity</option>
+                                                <option value="priority">priority</option>
+                                                <option value="category">category</option>
+                                                <option value="signature">signature</option>
+                                                <option value="threat_id">threat_id</option>
+                                                <option value="malware_name">malware_name</option>
+                                                
+                                                <!-- Process & System Fields -->
+                                                <option value="process">process</option>
+                                                <option value="process_name">process_name</option>
+                                                <option value="process_id">process_id</option>
+                                                <option value="parent_process">parent_process</option>
+                                                <option value="parent_process_id">parent_process_id</option>
+                                                <option value="command">command</option>
+                                                <option value="cmdline">cmdline</option>
+                                                <option value="working_directory">working_directory</option>
+                                                
+                                                <!-- File & Access Fields -->
+                                                <option value="file_path">file_path</option>
+                                                <option value="file_name">file_name</option>
+                                                <option value="file_hash">file_hash</option>
+                                                <option value="file_size">file_size</option>
+                                                <option value="file_type">file_type</option>
+                                                <option value="access_type">access_type</option>
+                                                <option value="permission">permission</option>
+                                                
+                                                <!-- Time & Date Fields -->
+                                                <option value="_time">_time</option>
+                                                <option value="timestamp">timestamp</option>
+                                                <option value="date">date</option>
+                                                <option value="time">time</option>
+                                                
+                                                <!-- Custom Field -->
+                                                <option value="custom">Custom...</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <select class="form-select filter-operator">
+                                                <option value="=">=</option>
+                                                <option value="!=">!=</option>
+                                                <option value=">">></option>
+                                                <option value=">=">>=</option>
+                                                <option value="<"><</option>
+                                                <option value="<="><=</option>
+                                                <option value="IN">IN</option>
+                                                <option value="NOT IN">NOT IN</option>
+                                                <option value="MATCHES">MATCHES</option>
+                                                <option value="NOT MATCHES">NOT MATCHES</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-5">
+                                            <input type="text" class="form-control filter-value" placeholder="Enter value">
+                                        </div>
+                                        <div class="col-md-2">
+                                            <button type="button" class="btn btn-outline-danger btn-sm remove-filter">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button type="button" id="addFilter" class="btn btn-outline-primary btn-sm">
+                                    <i class="fas fa-plus me-1"></i>Add Filter
+                                </button>
+                            </div>
+
+                            <!-- Stats/Aggregation -->
+                            <div class="mb-4" id="statsSection" style="display: none;">
+                                <label class="form-label fw-bold">Statistics & Aggregation</label>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <select id="statsFunction" class="form-select">
+                                            <option value="">Select function...</option>
+                                            <option value="count">count</option>
+                                            <option value="sum">sum</option>
+                                            <option value="avg">avg</option>
+                                            <option value="min">min</option>
+                                            <option value="max">max</option>
+                                            <option value="median">median</option>
+                                            <option value="stdev">stdev</option>
+                                            <option value="var">var</option>
+                                            <option value="dc">dc (distinct count)</option>
+                                            <option value="list">list</option>
+                                            <option value="values">values</option>
+                                            <option value="range">range</option>
+                                            <option value="earliest">earliest</option>
+                                            <option value="latest">latest</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <input type="text" id="statsField" class="form-control" placeholder="Field name">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <input type="text" id="statsAlias" class="form-control" placeholder="Alias (optional)">
+                                    </div>
+                                </div>
+                                <div class="mt-2">
+                                    <select id="groupByField" class="form-select">
+                                        <option value="">Group by field (optional)</option>
+                                        <option value="host">host</option>
+                                        <option value="source">source</option>
+                                        <option value="sourcetype">sourcetype</option>
+                                        <option value="status">status</option>
+                                        <option value="method">method</option>
+                                        <option value="clientip">clientip</option>
+                                        <option value="user">user</option>
+                                        <option value="custom">Custom...</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Output Format -->
+                            <div class="mb-4">
+                                <label class="form-label fw-bold">Output Format</label>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <select id="outputFormat" class="form-select">
+                                            <option value="table">Table</option>
+                                            <option value="list">List</option>
+                                            <option value="raw">Raw</option>
+                                            <option value="json">JSON</option>
+                                            <option value="csv">CSV</option>
+                                            <option value="xml">XML</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input type="number" id="limitResults" class="form-control" placeholder="Limit results (optional)" min="1" max="10000">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Generate Button -->
+                            <div class="text-center">
+                                <button type="button" id="generateCommand" class="btn btn-primary btn-lg">
+                                    <i class="fas fa-magic me-2"></i>
+                                    Generate SPL Command
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Generated Command Panel -->
+                <div class="col-lg-4">
+                    <div class="card shadow-sm mb-4">
+                        <div class="card-header bg-success text-white">
+                            <h5 class="mb-0">
+                                <i class="fas fa-code me-2"></i>
+                                Generated SPL Command
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <textarea id="generatedCommand" class="form-control" rows="8" readonly placeholder="Your SPL command will appear here..."></textarea>
+                            </div>
+                            <div class="d-grid gap-2">
+                                <button type="button" id="copyCommand" class="btn btn-success">
+                                    <i class="fas fa-copy me-2"></i>
+                                    Copy to Clipboard
+                                </button>
+                                <button type="button" id="clearCommand" class="btn btn-outline-secondary">
+                                    <i class="fas fa-eraser me-2"></i>
+                                    Clear
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                                         <!-- Quick Templates -->
+                     <div class="card shadow-sm">
+                         <div class="card-header bg-info text-white">
+                             <h5 class="mb-0">
+                                 <i class="fas fa-lightning-bolt me-2"></i>
+                                 Quick Templates
+                             </h5>
+                         </div>
+                         <div class="card-body">
+                             <!-- DFIR Templates -->
+                             <h6 class="text-primary mb-2"><i class="fas fa-search me-1"></i>DFIR & Security</h6>
+                             <div class="d-grid gap-1 mb-3">
+                                 <button type="button" class="btn btn-outline-danger btn-sm template-btn" data-template="malware-detection">
+                                     <i class="fas fa-virus-slash me-1"></i>Malware Detection
+                                 </button>
+                                 <button type="button" class="btn btn-outline-danger btn-sm template-btn" data-template="suspicious-logins">
+                                     <i class="fas fa-user-secret me-1"></i>Suspicious Logins
+                                 </button>
+                                 <button type="button" class="btn btn-outline-danger btn-sm template-btn" data-template="failed-authentication">
+                                     <i class="fas fa-lock me-1"></i>Failed Authentication
+                                 </button>
+                                 <button type="button" class="btn btn-outline-danger btn-sm template-btn" data-template="privilege-escalation">
+                                     <i class="fas fa-arrow-up me-1"></i>Privilege Escalation
+                                 </button>
+                                 <button type="button" class="btn btn-outline-danger btn-sm template-btn" data-template="data-exfiltration">
+                                     <i class="fas fa-download me-1"></i>Data Exfiltration
+                                 </button>
+                                 <button type="button" class="btn btn-outline-danger btn-sm template-btn" data-template="command-execution">
+                                     <i class="fas fa-terminal me-1"></i>Command Execution
+                                 </button>
+                                 <button type="button" class="btn btn-outline-danger btn-sm template-btn" data-template="lateral-movement">
+                                     <i class="fas fa-arrows-alt me-1"></i>Lateral Movement
+                                 </button>
+                                 <button type="button" class="btn btn-outline-danger btn-sm template-btn" data-template="persistence-mechanisms">
+                                     <i class="fas fa-anchor me-1"></i>Persistence Mechanisms
+                                 </button>
+                                 <button type="button" class="btn btn-outline-danger btn-sm template-btn" data-template="ransomware-activity">
+                                     <i class="fas fa-lock me-1"></i>Ransomware Activity
+                                 </button>
+                                 <button type="button" class="btn btn-outline-danger btn-sm template-btn" data-template="suspicious-processes">
+                                     <i class="fas fa-exclamation-triangle me-1"></i>Suspicious Processes
+                                 </button>
+                                 <button type="button" class="btn btn-outline-danger btn-sm template-btn" data-template="file-system-changes">
+                                     <i class="fas fa-file-alt me-1"></i>File System Changes
+                                 </button>
+                                 <button type="button" class="btn btn-outline-danger btn-sm template-btn" data-template="registry-changes">
+                                     <i class="fas fa-database me-1"></i>Registry Changes
+                                 </button>
+                                 <button type="button" class="btn btn-outline-danger btn-sm template-btn" data-template="scheduled-tasks">
+                                     <i class="fas fa-clock me-1"></i>Scheduled Tasks
+                                 </button>
+                                 <button type="button" class="btn btn-outline-danger btn-sm template-btn" data-template="service-changes">
+                                     <i class="fas fa-cogs me-1"></i>Service Changes
+                                 </button>
+                                 <button type="button" class="btn btn-outline-danger btn-sm template-btn" data-template="user-account-changes">
+                                     <i class="fas fa-user-edit me-1"></i>User Account Changes
+                                 </button>
+                                 <button type="button" class="btn btn-outline-danger btn-sm template-btn" data-template="group-membership-changes">
+                                     <i class="fas fa-users-cog me-1"></i>Group Membership Changes
+                                 </button>
+                                 <button type="button" class="btn btn-outline-danger btn-sm template-btn" data-template="network-shares">
+                                     <i class="fas fa-share-alt me-1"></i>Network Shares
+                                 </button>
+                                 <button type="button" class="btn btn-outline-danger btn-sm template-btn" data-template="remote-desktop-activity">
+                                     <i class="fas fa-desktop me-1"></i>Remote Desktop Activity
+                                 </button>
+                                 <button type="button" class="btn btn-outline-danger btn-sm template-btn" data-template="powershell-activity">
+                                     <i class="fas fa-terminal me-1"></i>PowerShell Activity
+                                 </button>
+                                 <button type="button" class="btn btn-outline-danger btn-sm template-btn" data-template="wmi-activity">
+                                     <i class="fas fa-tools me-1"></i>WMI Activity
+                                 </button>
+                                 <button type="button" class="btn btn-outline-danger btn-sm template-btn" data-template="certificate-changes">
+                                     <i class="fas fa-certificate me-1"></i>Certificate Changes
+                                 </button>
+                                 <button type="button" class="btn btn-outline-danger btn-sm template-btn" data-template="antivirus-events">
+                                     <i class="fas fa-shield-virus me-1"></i>Antivirus Events
+                                 </button>
+                                 <button type="button" class="btn btn-outline-danger btn-sm template-btn" data-template="firewall-rule-changes">
+                                     <i class="fas fa-fire me-1"></i>Firewall Rule Changes
+                                 </button>
+                                 <button type="button" class="btn btn-outline-danger btn-sm template-btn" data-template="email-security">
+                                     <i class="fas fa-envelope me-1"></i>Email Security
+                                 </button>
+                                 <button type="button" class="btn btn-outline-danger btn-sm template-btn" data-template="system-integrity">
+                                     <i class="fas fa-shield-alt me-1"></i>System Integrity
+                                 </button>
+                                 <button type="button" class="btn btn-outline-danger btn-sm template-btn" data-template="vulnerability-scan">
+                                     <i class="fas fa-search me-1"></i>Vulnerability Scan
+                                 </button>
+                                 <button type="button" class="btn btn-outline-danger btn-sm template-btn" data-template="incident-timeline">
+                                     <i class="fas fa-history me-1"></i>Incident Timeline
+                                 </button>
+                                 <button type="button" class="btn btn-outline-danger btn-sm template-btn" data-template="data-loss-prevention">
+                                     <i class="fas fa-ban me-1"></i>Data Loss Prevention
+                                 </button>
+                                 <button type="button" class="btn btn-outline-danger btn-sm template-btn" data-template="endpoint-detection">
+                                     <i class="fas fa-eye me-1"></i>Endpoint Detection
+                                 </button>
+                             </div>
+
+                             <!-- Network Security -->
+                             <h6 class="text-primary mb-2"><i class="fas fa-network-wired me-1"></i>Network Security</h6>
+                             <div class="d-grid gap-1 mb-3">
+                                 <button type="button" class="btn btn-outline-warning btn-sm template-btn" data-template="port-scanning">
+                                     <i class="fas fa-search-plus me-1"></i>Port Scanning
+                                 </button>
+                                 <button type="button" class="btn btn-outline-warning btn-sm template-btn" data-template="ddos-attacks">
+                                     <i class="fas fa-bomb me-1"></i>DDoS Attacks
+                                 </button>
+                                 <button type="button" class="btn btn-outline-warning btn-sm template-btn" data-template="vpn-connections">
+                                     <i class="fas fa-shield-virus me-1"></i>VPN Connections
+                                 </button>
+                                 <button type="button" class="btn btn-outline-warning btn-sm template-btn" data-template="firewall-events">
+                                     <i class="fas fa-fire me-1"></i>Firewall Events
+                                 </button>
+                                 <button type="button" class="btn btn-outline-warning btn-sm template-btn" data-template="proxy-usage">
+                                     <i class="fas fa-random me-1"></i>Proxy Usage
+                                 </button>
+                                 <button type="button" class="btn btn-outline-warning btn-sm template-btn" data-template="tor-traffic">
+                                     <i class="fas fa-eye-slash me-1"></i>TOR Traffic
+                                 </button>
+                             </div>
+
+                             <!-- Web Security -->
+                             <h6 class="text-primary mb-2"><i class="fas fa-globe me-1"></i>Web Security</h6>
+                             <div class="d-grid gap-1 mb-3">
+                                 <button type="button" class="btn btn-outline-info btn-sm template-btn" data-template="sql-injection">
+                                     <i class="fas fa-database me-1"></i>SQL Injection
+                                 </button>
+                                 <button type="button" class="btn btn-outline-info btn-sm template-btn" data-template="xss-attacks">
+                                     <i class="fas fa-code me-1"></i>XSS Attacks
+                                 </button>
+                                 <button type="button" class="btn btn-outline-info btn-sm template-btn" data-template="file-upload-attacks">
+                                     <i class="fas fa-upload me-1"></i>File Upload Attacks
+                                 </button>
+                                 <button type="button" class="btn btn-outline-info btn-sm template-btn" data-template="directory-traversal">
+                                     <i class="fas fa-folder-open me-1"></i>Directory Traversal
+                                 </button>
+                                 <button type="button" class="btn btn-outline-info btn-sm template-btn" data-template="api-abuse">
+                                     <i class="fas fa-plug me-1"></i>API Abuse
+                                 </button>
+                                 <button type="button" class="btn btn-outline-info btn-sm template-btn" data-template="bot-traffic">
+                                     <i class="fas fa-robot me-1"></i>Bot Traffic
+                                 </button>
+                             </div>
+
+                             <!-- System Monitoring -->
+                             <h6 class="text-primary mb-2"><i class="fas fa-desktop me-1"></i>System Monitoring</h6>
+                             <div class="d-grid gap-1 mb-3">
+                                 <button type="button" class="btn btn-outline-success btn-sm template-btn" data-template="error-logs">
+                                     <i class="fas fa-exclamation-triangle me-1"></i>Error Logs
+                                 </button>
+                                 <button type="button" class="btn btn-outline-success btn-sm template-btn" data-template="performance-metrics">
+                                     <i class="fas fa-tachometer-alt me-1"></i>Performance Metrics
+                                 </button>
+                                 <button type="button" class="btn btn-outline-success btn-sm template-btn" data-template="disk-usage">
+                                     <i class="fas fa-hdd me-1"></i>Disk Usage
+                                 </button>
+                                 <button type="button" class="btn btn-outline-success btn-sm template-btn" data-template="memory-usage">
+                                     <i class="fas fa-memory me-1"></i>Memory Usage
+                                 </button>
+                                 <button type="button" class="btn btn-outline-success btn-sm template-btn" data-template="service-status">
+                                     <i class="fas fa-cogs me-1"></i>Service Status
+                                 </button>
+                                 <button type="button" class="btn btn-outline-success btn-sm template-btn" data-template="process-monitoring">
+                                     <i class="fas fa-tasks me-1"></i>Process Monitoring
+                                 </button>
+                             </div>
+
+                             <!-- User Activity -->
+                             <h6 class="text-primary mb-2"><i class="fas fa-users me-1"></i>User Activity</h6>
+                             <div class="d-grid gap-1 mb-3">
+                                 <button type="button" class="btn btn-outline-secondary btn-sm template-btn" data-template="user-activity">
+                                     <i class="fas fa-users me-1"></i>User Activity
+                                 </button>
+                                 <button type="button" class="btn btn-outline-secondary btn-sm template-btn" data-template="top-ips">
+                                     <i class="fas fa-chart-bar me-1"></i>Top IPs
+                                 </button>
+                                 <button type="button" class="btn btn-outline-secondary btn-sm template-btn" data-template="response-times">
+                                     <i class="fas fa-clock me-1"></i>Response Times
+                                 </button>
+                                 <button type="button" class="btn btn-outline-secondary btn-sm template-btn" data-template="file-access">
+                                     <i class="fas fa-file me-1"></i>File Access
+                                 </button>
+                                 <button type="button" class="btn btn-outline-secondary btn-sm template-btn" data-template="login-patterns">
+                                     <i class="fas fa-sign-in-alt me-1"></i>Login Patterns
+                                 </button>
+                                 <button type="button" class="btn btn-outline-secondary btn-sm template-btn" data-template="session-duration">
+                                     <i class="fas fa-hourglass me-1"></i>Session Duration
+                                 </button>
+                             </div>
+
+                             <!-- Compliance & Audit -->
+                             <h6 class="text-primary mb-2"><i class="fas fa-clipboard-check me-1"></i>Compliance & Audit</h6>
+                             <div class="d-grid gap-1">
+                                 <button type="button" class="btn btn-outline-dark btn-sm template-btn" data-template="gdpr-compliance">
+                                     <i class="fas fa-user-shield me-1"></i>GDPR Compliance
+                                 </button>
+                                 <button type="button" class="btn btn-outline-dark btn-sm template-btn" data-template="pci-audit">
+                                     <i class="fas fa-credit-card me-1"></i>PCI Audit
+                                 </button>
+                                 <button type="button" class="btn btn-outline-dark btn-sm template-btn" data-template="sox-compliance">
+                                     <i class="fas fa-building me-1"></i>SOX Compliance
+                                 </button>
+                                 <button type="button" class="btn btn-outline-dark btn-sm template-btn" data-template="access-reviews">
+                                     <i class="fas fa-user-check me-1"></i>Access Reviews
+                                 </button>
+                                 <button type="button" class="btn btn-outline-dark btn-sm template-btn" data-template="data-classification">
+                                     <i class="fas fa-tags me-1"></i>Data Classification
+                                 </button>
+                                 <button type="button" class="btn btn-outline-dark btn-sm template-btn" data-template="audit-trail">
+                                     <i class="fas fa-history me-1"></i>Audit Trail
+                                 </button>
+                             </div>
+                         </div>
+                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- History Modal -->
+    <div class="modal fade" id="historyModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-history me-2"></i>Command History</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="historyList" class="list-group">
+                        <!-- History items will be populated here -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-danger" id="clearHistory">Clear History</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Help Modal -->
+    <div class="modal fade" id="helpModal" tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-question-circle me-2"></i>Help & Documentation</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <ul class="nav nav-tabs" id="helpTabs">
+                        <li class="nav-item">
+                            <a class="nav-link active" data-bs-toggle="tab" href="#quickStart">Quick Start</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-bs-toggle="tab" href="#splGuide">SPL Guide</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-bs-toggle="tab" href="#templates">Templates</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-bs-toggle="tab" href="#faq">FAQ</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content mt-3">
+                        <div class="tab-pane fade show active" id="quickStart">
+                            <h6>Getting Started</h6>
+                            <ol>
+                                <li>Select a search command (search, tstats, stats)</li>
+                                <li>Choose your index and sourcetype</li>
+                                <li>Set time range or use custom time</li>
+                                <li>Add filters using the filter section</li>
+                                <li>Click "Generate SPL Command"</li>
+                                <li>Copy and paste into Splunk</li>
+                            </ol>
+                        </div>
+                        <div class="tab-pane fade" id="splGuide">
+                            <h6>SPL Operators</h6>
+                            <ul>
+                                <li><code>=</code> : Equal to</li>
+                                <li><code>!=</code> : Not equal to</li>
+                                <li><code>></code> : Greater than</li>
+                                <li><code><</code> : Less than</li>
+                                <li><code>IN</code> : Value in list</li>
+                                <li><code>MATCHES</code> : Pattern matching</li>
+                            </ul>
+                        </div>
+                        <div class="tab-pane fade" id="templates">
+                            <h6>Template Categories</h6>
+                            <ul>
+                                <li><strong>DFIR & Security</strong> : Malware detection, privilege escalation</li>
+                                <li><strong>Network Security</strong> : Port scanning, DDoS detection</li>
+                                <li><strong>Web Security</strong> : SQL injection, XSS attacks</li>
+                                <li><strong>System Monitoring</strong> : Performance, errors</li>
+                                <li><strong>User Activity</strong> : Login patterns, file access</li>
+                                <li><strong>Compliance & Audit</strong> : GDPR, PCI, SOX</li>
+                            </ul>
+                        </div>
+                        <div class="tab-pane fade" id="faq">
+                            <h6>Frequently Asked Questions</h6>
+                            <div class="accordion" id="faqAccordion">
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header">
+                                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                                            How do I add custom fields?
+                                        </button>
+                                    </h2>
+                                    <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+                                        <div class="accordion-body">
+                                            Select "Custom..." from any dropdown and enter your field name.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header">
+                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                                            Can I save my configurations?
+                                        </button>
+                                    </h2>
+                                    <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                        <div class="accordion-body">
+                                            Yes! Use the save button in the header to save your current configuration.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Validation Toast -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div id="validationToast" class="toast" role="alert">
+            <div class="toast-header">
+                <i class="fas fa-check-circle text-success me-2"></i>
+                <strong class="me-auto">SPL Validation</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+            </div>
+            <div class="toast-body" id="validationMessage">
+                Command is valid!
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
