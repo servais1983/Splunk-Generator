@@ -1181,7 +1181,7 @@ class SPLGenerator {
                 searchCommand: 'stats',
                 index: 'main',
                 sourcetype: 'access_combined OR web_access',
-                timeRange: 'earliest=-1h latest=now',
+                timeRange: '-1h',
                 searchString: '',
                 statsFunction: 'avg',
                 statsField: 'response_time',
@@ -1193,7 +1193,7 @@ class SPLGenerator {
                 searchCommand: 'search',
                 index: 'main',
                 sourcetype: 'file_access OR audit_logs',
-                timeRange: 'earliest=-24h latest=now',
+                timeRange: '-24h',
                 searchString: 'file OR "file access" OR "file read" OR "file write" OR "file delete"',
                 filters: [
                     { field: 'action', operator: '=', value: 'access' }
@@ -1203,7 +1203,7 @@ class SPLGenerator {
                 searchCommand: 'stats',
                 index: 'security',
                 sourcetype: 'windows_security OR linux_syslog',
-                timeRange: 'earliest=-7d latest=now',
+                timeRange: '-7d',
                 searchString: 'login OR authentication OR "user logon"',
                 statsFunction: 'count',
                 statsField: '',
@@ -1215,7 +1215,7 @@ class SPLGenerator {
                 searchCommand: 'stats',
                 index: 'main',
                 sourcetype: 'web_access OR session_logs',
-                timeRange: 'earliest=-24h latest=now',
+                timeRange: '-24h',
                 searchString: '',
                 statsFunction: 'avg',
                 statsField: 'session_duration',
@@ -1229,7 +1229,7 @@ class SPLGenerator {
                 searchCommand: 'search',
                 index: 'audit',
                 sourcetype: 'audit_logs OR data_access',
-                timeRange: 'earliest=-30d latest=now',
+                timeRange: '-30d',
                 searchString: 'personal data OR PII OR "personal information" OR "data access" OR "data export"',
                 filters: [
                     { field: 'data_type', operator: '=', value: 'personal' }
@@ -1239,7 +1239,7 @@ class SPLGenerator {
                 searchCommand: 'search',
                 index: 'audit',
                 sourcetype: 'audit_logs OR payment_logs',
-                timeRange: 'earliest=-30d latest=now',
+                timeRange: '-30d',
                 searchString: 'credit card OR payment OR "card number" OR "payment processing" OR PCI',
                 filters: [
                     { field: 'compliance', operator: '=', value: 'PCI' }
@@ -1249,7 +1249,7 @@ class SPLGenerator {
                 searchCommand: 'search',
                 index: 'audit',
                 sourcetype: 'audit_logs OR financial_logs',
-                timeRange: 'earliest=-30d latest=now',
+                timeRange: '-30d',
                 searchString: 'financial OR accounting OR "financial data" OR "SOX" OR "Sarbanes-Oxley"',
                 filters: [
                     { field: 'compliance', operator: '=', value: 'SOX' }
@@ -1259,7 +1259,7 @@ class SPLGenerator {
                 searchCommand: 'search',
                 index: 'audit',
                 sourcetype: 'audit_logs OR access_logs',
-                timeRange: 'earliest=-30d latest=now',
+                timeRange: '-30d',
                 searchString: 'access OR "access review" OR "permission change" OR "role change" OR "privilege change"',
                 filters: [
                     { field: 'action', operator: '=', value: 'change' }
@@ -1269,7 +1269,7 @@ class SPLGenerator {
                 searchCommand: 'search',
                 index: 'audit',
                 sourcetype: 'audit_logs OR data_logs',
-                timeRange: 'earliest=-30d latest=now',
+                timeRange: '-30d',
                 searchString: 'classified OR "sensitive data" OR "confidential" OR "restricted" OR "data classification"',
                 filters: [
                     { field: 'classification', operator: 'IN', value: 'confidential,restricted,sensitive' }
@@ -1279,7 +1279,7 @@ class SPLGenerator {
                 searchCommand: 'search',
                 index: 'audit',
                 sourcetype: 'audit_logs',
-                timeRange: 'earliest=-7d latest=now',
+                timeRange: '-7d',
                 searchString: 'audit OR "audit trail" OR "audit log" OR "audit event"',
                 filters: [
                     { field: 'audit_type', operator: '=', value: 'audit' }
@@ -1291,7 +1291,7 @@ class SPLGenerator {
                 searchCommand: 'search',
                 index: 'security',
                 sourcetype: 'windows_security OR linux_syslog OR file_access',
-                timeRange: 'earliest=-24h latest=now',
+                timeRange: '-24h',
                 searchString: 'ransomware OR "file encryption" OR "encrypted files" OR ".encrypted" OR ".locked" OR "crypto" OR "bitcoin" OR "payment"',
                 filters: [
                     { field: 'action', operator: '=', value: 'encrypt' }
@@ -1301,7 +1301,7 @@ class SPLGenerator {
                 searchCommand: 'search',
                 index: 'security',
                 sourcetype: 'windows_security OR linux_syslog OR process_logs',
-                timeRange: 'earliest=-24h latest=now',
+                timeRange: '-24h',
                 searchString: 'process OR "new process" OR "process creation" OR "suspicious process" OR "unknown process"',
                 filters: [
                     { field: 'process_name', operator: 'MATCHES', value: '.*\\.(exe|dll|bat|ps1|vbs|js)$' }
@@ -1311,7 +1311,7 @@ class SPLGenerator {
                 searchCommand: 'search',
                 index: 'network',
                 sourcetype: 'network_traffic OR firewall OR ids',
-                timeRange: 'earliest=-24h latest=now',
+                timeRange: '-24h',
                 searchString: 'connection OR "network connection" OR "outbound connection" OR "inbound connection" OR "established connection"',
                 filters: [
                     { field: 'action', operator: '=', value: 'established' }
@@ -1321,7 +1321,7 @@ class SPLGenerator {
                 searchCommand: 'search',
                 index: 'network',
                 sourcetype: 'dns OR network_traffic',
-                timeRange: 'earliest=-24h latest=now',
+                timeRange: '-24h',
                 searchString: 'dns OR "domain query" OR "name resolution" OR "lookup" OR "resolve"',
                 filters: [
                     { field: 'query_type', operator: '=', value: 'A' }
@@ -1331,7 +1331,7 @@ class SPLGenerator {
                 searchCommand: 'search',
                 index: 'security',
                 sourcetype: 'file_access OR audit_logs OR windows_security',
-                timeRange: 'earliest=-24h latest=now',
+                timeRange: '-24h',
                 searchString: 'file OR "file creation" OR "file modification" OR "file deletion" OR "file access"',
                 filters: [
                     { field: 'action', operator: 'IN', value: 'create,modify,delete' }
@@ -1341,7 +1341,7 @@ class SPLGenerator {
                 searchCommand: 'search',
                 index: 'security',
                 sourcetype: 'windows_security OR registry_logs',
-                timeRange: 'earliest=-24h latest=now',
+                timeRange: '-24h',
                 searchString: 'registry OR "registry key" OR "registry value" OR "registry modification" OR "registry access"',
                 filters: [
                     { field: 'action', operator: '=', value: 'modify' }
@@ -1351,7 +1351,7 @@ class SPLGenerator {
                 searchCommand: 'search',
                 index: 'security',
                 sourcetype: 'windows_security OR system_logs',
-                timeRange: 'earliest=-7d latest=now',
+                timeRange: '-7d',
                 searchString: 'scheduled OR "scheduled task" OR "task scheduler" OR "cron" OR "at command"',
                 filters: [
                     { field: 'action', operator: '=', value: 'create' }
@@ -1361,7 +1361,7 @@ class SPLGenerator {
                 searchCommand: 'search',
                 index: 'security',
                 sourcetype: 'windows_security OR service_logs',
-                timeRange: 'earliest=-7d latest=now',
+                timeRange: '-7d',
                 searchString: 'service OR "service creation" OR "service modification" OR "service start" OR "service stop"',
                 filters: [
                     { field: 'action', operator: 'IN', value: 'create,modify,start,stop' }
@@ -1371,7 +1371,7 @@ class SPLGenerator {
                 searchCommand: 'search',
                 index: 'security',
                 sourcetype: 'windows_security OR linux_syslog OR audit_logs',
-                timeRange: 'earliest=-7d latest=now',
+                timeRange: '-7d',
                 searchString: 'user OR "user creation" OR "user modification" OR "user deletion" OR "account change"',
                 filters: [
                     { field: 'action', operator: 'IN', value: 'create,modify,delete' }
@@ -1381,7 +1381,7 @@ class SPLGenerator {
                 searchCommand: 'search',
                 index: 'security',
                 sourcetype: 'windows_security OR linux_syslog OR audit_logs',
-                timeRange: 'earliest=-7d latest=now',
+                timeRange: '-7d',
                 searchString: 'group OR "group membership" OR "group change" OR "role change" OR "permission change"',
                 filters: [
                     { field: 'action', operator: '=', value: 'modify' }
@@ -1391,7 +1391,7 @@ class SPLGenerator {
                 searchCommand: 'search',
                 index: 'security',
                 sourcetype: 'windows_security OR network_logs',
-                timeRange: 'earliest=-24h latest=now',
+                timeRange: '-24h',
                 searchString: 'share OR "network share" OR "file sharing" OR "shared folder" OR "access to share"',
                 filters: [
                     { field: 'action', operator: '=', value: 'access' }
@@ -1401,7 +1401,7 @@ class SPLGenerator {
                 searchCommand: 'search',
                 index: 'security',
                 sourcetype: 'windows_security OR rdp_logs',
-                timeRange: 'earliest=-24h latest=now',
+                timeRange: '-24h',
                 searchString: 'rdp OR "remote desktop" OR "terminal services" OR "remote connection" OR "mstsc"',
                 filters: [
                     { field: 'action', operator: '=', value: 'connect' }
@@ -1411,7 +1411,7 @@ class SPLGenerator {
                 searchCommand: 'search',
                 index: 'security',
                 sourcetype: 'windows_security OR powershell_logs',
-                timeRange: 'earliest=-24h latest=now',
+                timeRange: '-24h',
                 searchString: 'powershell OR "powershell.exe" OR "script execution" OR "command execution" OR "ps1"',
                 filters: [
                     { field: 'process', operator: '=', value: 'powershell.exe' }
@@ -1421,7 +1421,7 @@ class SPLGenerator {
                 searchCommand: 'search',
                 index: 'security',
                 sourcetype: 'windows_security OR wmi_logs',
-                timeRange: 'earliest=-24h latest=now',
+                timeRange: '-24h',
                 searchString: 'wmi OR "windows management instrumentation" OR "wmic" OR "wbem" OR "cim"',
                 filters: [
                     { field: 'action', operator: '=', value: 'execute' }
@@ -1431,7 +1431,7 @@ class SPLGenerator {
                 searchCommand: 'search',
                 index: 'security',
                 sourcetype: 'windows_security OR certificate_logs',
-                timeRange: 'earliest=-7d latest=now',
+                timeRange: '-7d',
                 searchString: 'certificate OR "cert store" OR "certificate store" OR "ssl cert" OR "tls cert"',
                 filters: [
                     { field: 'action', operator: 'IN', value: 'install,remove,modify' }
@@ -1441,7 +1441,7 @@ class SPLGenerator {
                 searchCommand: 'search',
                 index: 'security',
                 sourcetype: 'antivirus_logs OR security_logs',
-                timeRange: 'earliest=-24h latest=now',
+                timeRange: '-24h',
                 searchString: 'antivirus OR "virus scan" OR "threat detected" OR "malware detected" OR "quarantine" OR "clean"',
                 filters: [
                     { field: 'severity', operator: '>=', value: 'medium' }
@@ -1451,7 +1451,7 @@ class SPLGenerator {
                 searchCommand: 'search',
                 index: 'security',
                 sourcetype: 'firewall_logs OR windows_security',
-                timeRange: 'earliest=-7d latest=now',
+                timeRange: '-7d',
                 searchString: 'firewall OR "firewall rule" OR "rule change" OR "access rule" OR "security rule"',
                 filters: [
                     { field: 'action', operator: 'IN', value: 'add,modify,delete' }
@@ -1461,7 +1461,7 @@ class SPLGenerator {
                 searchCommand: 'search',
                 index: 'security',
                 sourcetype: 'email_logs OR mail_logs',
-                timeRange: 'earliest=-24h latest=now',
+                timeRange: '-24h',
                 searchString: 'email OR "phishing" OR "spam" OR "malicious email" OR "suspicious attachment" OR "quarantine"',
                 filters: [
                     { field: 'action', operator: '=', value: 'blocked' }
@@ -1471,7 +1471,7 @@ class SPLGenerator {
                 searchCommand: 'search',
                 index: 'network',
                 sourcetype: 'web_access OR proxy_logs',
-                timeRange: 'earliest=-24h latest=now',
+                timeRange: '-24h',
                 searchString: 'proxy OR "web access" OR "http request" OR "https request" OR "url access"',
                 filters: [
                     { field: 'status', operator: '>=', value: '400' }
@@ -1481,7 +1481,7 @@ class SPLGenerator {
                 searchCommand: 'search',
                 index: 'network',
                 sourcetype: 'network_traffic OR ids',
-                timeRange: 'earliest=-24h latest=now',
+                timeRange: '-24h',
                 searchString: 'protocol OR "tcp" OR "udp" OR "icmp" OR "http" OR "https" OR "ftp" OR "smtp"',
                 filters: [
                     { field: 'protocol', operator: 'IN', value: 'tcp,udp,icmp' }
@@ -1491,7 +1491,7 @@ class SPLGenerator {
                 searchCommand: 'search',
                 index: 'security',
                 sourcetype: 'integrity_logs OR system_logs',
-                timeRange: 'earliest=-24h latest=now',
+                timeRange: '-24h',
                 searchString: 'integrity OR "file integrity" OR "system integrity" OR "checksum" OR "hash mismatch"',
                 filters: [
                     { field: 'status', operator: '=', value: 'violation' }
@@ -1501,7 +1501,7 @@ class SPLGenerator {
                 searchCommand: 'search',
                 index: 'system',
                 sourcetype: 'backup_logs OR system_logs',
-                timeRange: 'earliest=-7d latest=now',
+                timeRange: '-7d',
                 searchString: 'backup OR "backup job" OR "backup status" OR "backup failure" OR "restore"',
                 filters: [
                     { field: 'status', operator: '=', value: 'failed' }
@@ -1511,7 +1511,7 @@ class SPLGenerator {
                 searchCommand: 'search',
                 index: 'system',
                 sourcetype: 'patch_logs OR system_logs',
-                timeRange: 'earliest=-7d latest=now',
+                timeRange: '-7d',
                 searchString: 'patch OR "update" OR "hotfix" OR "security update" OR "vulnerability" OR "cve"',
                 filters: [
                     { field: 'status', operator: '=', value: 'installed' }
@@ -1521,7 +1521,7 @@ class SPLGenerator {
                 searchCommand: 'search',
                 index: 'security',
                 sourcetype: 'vulnerability_logs OR scan_logs',
-                timeRange: 'earliest=-7d latest=now',
+                timeRange: '-7d',
                 searchString: 'vulnerability OR "security scan" OR "penetration test" OR "security assessment" OR "cve"',
                 filters: [
                     { field: 'severity', operator: '>=', value: 'high' }
@@ -1531,7 +1531,7 @@ class SPLGenerator {
                 searchCommand: 'search',
                 index: 'security',
                 sourcetype: 'windows_security OR linux_syslog OR network_traffic OR web_access',
-                timeRange: 'earliest=-24h latest=now',
+                timeRange: '-24h',
                 searchString: 'incident OR "security event" OR "alert" OR "threat" OR "attack" OR "breach"',
                 filters: [
                     { field: 'severity', operator: '>=', value: 'medium' }
@@ -1541,7 +1541,7 @@ class SPLGenerator {
                 searchCommand: 'search',
                 index: 'security',
                 sourcetype: 'dlp_logs OR data_access OR audit_logs',
-                timeRange: 'earliest=-24h latest=now',
+                timeRange: '-24h',
                 searchString: 'dlp OR "data loss" OR "data leak" OR "sensitive data" OR "policy violation" OR "data exfiltration"',
                 filters: [
                     { field: 'action', operator: '=', value: 'blocked' }
@@ -1551,7 +1551,7 @@ class SPLGenerator {
                 searchCommand: 'search',
                 index: 'security',
                 sourcetype: 'edr_logs OR endpoint_logs OR security_logs',
-                timeRange: 'earliest=-24h latest=now',
+                timeRange: '-24h',
                 searchString: 'edr OR "endpoint detection" OR "endpoint response" OR "threat hunting" OR "behavioral analysis"',
                 filters: [
                     { field: 'severity', operator: '>=', value: 'medium' }
