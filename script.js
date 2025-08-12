@@ -308,7 +308,16 @@ class SPLGenerator {
 
             // Add time range
             if (timeRange && timeRange !== 'custom') {
-                command += ` | ${timeRange}`;
+                if (timeRange.includes('earliest=') && timeRange.includes('latest=')) {
+                    // Extract earliest and latest values
+                    const earliestMatch = timeRange.match(/earliest=([^ ]+)/);
+                    const latestMatch = timeRange.match(/latest=([^ ]+)/);
+                    if (earliestMatch && latestMatch) {
+                        command += ` earliest=${earliestMatch[1]} latest=${latestMatch[1]}`;
+                    }
+                } else {
+                    command += ` | ${timeRange}`;
+                }
             }
 
             // Add stats command
@@ -332,7 +341,16 @@ class SPLGenerator {
 
             // Add time range
             if (timeRange && timeRange !== 'custom') {
-                command += ` | ${timeRange}`;
+                if (timeRange.includes('earliest=') && timeRange.includes('latest=')) {
+                    // Extract earliest and latest values
+                    const earliestMatch = timeRange.match(/earliest=([^ ]+)/);
+                    const latestMatch = timeRange.match(/latest=([^ ]+)/);
+                    if (earliestMatch && latestMatch) {
+                        command += ` earliest=${earliestMatch[1]} latest=${latestMatch[1]}`;
+                    }
+                } else {
+                    command += ` | ${timeRange}`;
+                }
             }
 
             // Add search string
@@ -866,12 +884,12 @@ class SPLGenerator {
             // DFIR & Security Templates
             'malware-detection': {
                 searchCommand: 'search',
-                index: 'security',
-                sourcetype: 'windows_security OR windows_syslog OR linux_syslog',
+                index: 'main',
+                sourcetype: 'WinEventLog:Security OR WinEventLog:System OR Sysmon',
                 timeRange: 'earliest=-24h latest=now',
-                searchString: 'malware OR virus OR trojan OR ransomware OR "suspicious file" OR "quarantine" OR "threat detected" OR "malicious" OR "infection"',
+                searchString: 'EventCode=1116 OR EventCode=1117 OR EventCode=1118 OR "malware" OR "virus" OR "trojan" OR "quarantine"',
                 filters: [
-                    { field: 'action', operator: '=', value: 'blocked' }
+                    { field: 'EventCode', operator: 'IN', value: '1116,1117,1118,8003,8004' }
                 ]
             },
             'suspicious-logins': {
@@ -886,13 +904,12 @@ class SPLGenerator {
             },
             'failed-authentication': {
                 searchCommand: 'search',
-                index: 'security',
-                sourcetype: 'windows_security OR linux_syslog OR web_access',
+                index: 'main',
+                sourcetype: 'WinEventLog:Security OR access_combined',
                 timeRange: 'earliest=-24h latest=now',
-                searchString: 'authentication failure OR "failed login" OR "invalid password" OR "access denied" OR "login failed"',
+                searchString: 'EventCode=4625 OR EventCode=4771 OR status=401 OR status=403',
                 filters: [
-                    { field: 'status', operator: '=', value: '401' },
-                    { field: 'status', operator: '=', value: '403' }
+                    { field: 'EventCode', operator: 'IN', value: '4625,4771' }
                 ]
             },
             'privilege-escalation': {
@@ -917,157 +934,156 @@ class SPLGenerator {
             },
             'command-execution': {
                 searchCommand: 'search',
-                index: 'security',
-                sourcetype: 'windows_security OR linux_syslog',
+                index: 'main',
+                sourcetype: 'Sysmon OR WinEventLog:Security',
                 timeRange: 'earliest=-24h latest=now',
-                searchString: 'cmd OR powershell OR bash OR shell OR "command line" OR "process creation" OR "command execution"',
+                searchString: 'EventCode=1 OR "cmd.exe" OR "powershell.exe" OR "process creation"',
                 filters: [
-                    { field: 'process', operator: '=', value: 'cmd.exe' },
-                    { field: 'process', operator: '=', value: 'powershell.exe' }
+                    { field: 'Image', operator: 'MATCHES', value: '.*\\.(exe|bat|ps1)$' }
                 ]
             },
             'lateral-movement': {
                 searchCommand: 'search',
-                index: 'security',
-                sourcetype: 'windows_security OR network_traffic',
+                index: 'main',
+                sourcetype: 'WinEventLog:Security OR Sysmon',
                 timeRange: 'earliest=-24h latest=now',
-                searchString: 'remote connection OR "remote desktop" OR "network logon" OR "lateral movement" OR "psexec" OR "wmic"',
+                searchString: 'EventCode=4624 OR EventCode=4625 OR "psexec" OR "wmic" OR "remote desktop"',
                 filters: [
-                    { field: 'action', operator: '=', value: 'remote' }
+                    { field: 'LogonType', operator: 'IN', value: '3,8,9,10' }
                 ]
             },
             'persistence-mechanisms': {
                 searchCommand: 'search',
-                index: 'security',
-                sourcetype: 'windows_security OR linux_syslog',
+                index: 'main',
+                sourcetype: 'WinEventLog:Security OR WinEventLog:System OR Sysmon',
                 timeRange: 'earliest=-7d latest=now',
-                searchString: 'registry OR "startup folder" OR "scheduled task" OR "service creation" OR "persistence" OR "autorun"',
+                searchString: 'EventCode=13 OR EventCode=14 OR EventCode=106 OR EventCode=7045 OR "registry" OR "scheduled task"',
                 filters: [
-                    { field: 'action', operator: '=', value: 'create' }
+                    { field: 'EventCode', operator: 'IN', value: '13,14,106,7045' }
                 ]
             },
 
             // Network Security Templates
             'port-scanning': {
                 searchCommand: 'search',
-                index: 'network',
-                sourcetype: 'firewall OR ids OR network_traffic',
+                index: 'main',
+                sourcetype: 'access_combined OR firewall',
                 timeRange: 'earliest=-1h latest=now',
-                searchString: 'port scan OR "connection attempt" OR "multiple ports" OR "scanning" OR "probe"',
+                searchString: 'status=444 OR status=445 OR status=446 OR "port scan" OR "connection attempt"',
                 filters: [
-                    { field: 'action', operator: '=', value: 'blocked' }
+                    { field: 'status', operator: '>=', value: '400' }
                 ]
             },
             'ddos-attacks': {
                 searchCommand: 'search',
-                index: 'network',
-                sourcetype: 'firewall OR ids OR web_access',
+                index: 'main',
+                sourcetype: 'access_combined OR firewall',
                 timeRange: 'earliest=-1h latest=now',
-                searchString: 'DDoS OR "denial of service" OR "flood attack" OR "rate limit exceeded" OR "connection flood"',
+                searchString: 'status=429 OR status=503 OR "rate limit" OR "connection flood" OR "DDoS"',
                 filters: [
-                    { field: 'action', operator: '=', value: 'blocked' }
+                    { field: 'status', operator: 'IN', value: '429,503,444' }
                 ]
             },
             'vpn-connections': {
                 searchCommand: 'search',
-                index: 'network',
-                sourcetype: 'vpn OR firewall',
+                index: 'main',
+                sourcetype: 'WinEventLog:Security OR access_combined',
                 timeRange: 'earliest=-24h latest=now',
-                searchString: 'VPN OR "virtual private network" OR "tunnel connection" OR "remote access"',
+                searchString: 'EventCode=4624 OR "VPN" OR "virtual private network" OR "tunnel"',
                 filters: [
-                    { field: 'action', operator: '=', value: 'connect' }
+                    { field: 'LogonType', operator: '=', value: '7' }
                 ]
             },
             'firewall-events': {
                 searchCommand: 'search',
-                index: 'network',
-                sourcetype: 'firewall',
+                index: 'main',
+                sourcetype: 'firewall OR access_combined',
                 timeRange: 'earliest=-24h latest=now',
-                searchString: 'firewall OR "access denied" OR "connection blocked" OR "rule violation"',
+                searchString: 'status=403 OR status=444 OR "firewall" OR "access denied" OR "blocked"',
                 filters: [
-                    { field: 'action', operator: '=', value: 'deny' }
+                    { field: 'status', operator: 'IN', value: '403,444,445' }
                 ]
             },
             'proxy-usage': {
                 searchCommand: 'search',
-                index: 'network',
-                sourcetype: 'web_access OR proxy',
+                index: 'main',
+                sourcetype: 'access_combined OR web_access',
                 timeRange: 'earliest=-24h latest=now',
-                searchString: 'proxy OR "forwarded for" OR "via proxy" OR "proxy server"',
+                searchString: 'X-Forwarded-For OR "via proxy" OR "proxy server" OR "forwarded"',
                 filters: [
-                    { field: 'via', operator: '=', value: 'proxy' }
+                    { field: 'http_user_agent', operator: 'MATCHES', value: '.*proxy.*' }
                 ]
             },
             'tor-traffic': {
                 searchCommand: 'search',
-                index: 'network',
-                sourcetype: 'web_access OR network_traffic',
+                index: 'main',
+                sourcetype: 'access_combined OR web_access',
                 timeRange: 'earliest=-24h latest=now',
                 searchString: 'tor OR "onion router" OR "exit node" OR "tor network"',
                 filters: [
-                    { field: 'user_agent', operator: '=', value: 'tor' }
+                    { field: 'http_user_agent', operator: 'MATCHES', value: '.*tor.*' }
                 ]
             },
 
             // Web Security Templates
             'sql-injection': {
                 searchCommand: 'search',
-                index: 'web',
-                sourcetype: 'web_access OR web_error',
+                index: 'main',
+                sourcetype: 'access_combined OR web_error',
                 timeRange: 'earliest=-24h latest=now',
-                searchString: 'sql OR "union select" OR "drop table" OR "insert into" OR "select from" OR "or 1=1" OR "or true"',
+                searchString: 'status=500 OR "union select" OR "drop table" OR "insert into" OR "or 1=1" OR "or true"',
                 filters: [
                     { field: 'status', operator: '>=', value: '400' }
                 ]
             },
             'xss-attacks': {
                 searchCommand: 'search',
-                index: 'web',
-                sourcetype: 'web_access OR web_error',
+                index: 'main',
+                sourcetype: 'access_combined OR web_error',
                 timeRange: 'earliest=-24h latest=now',
-                searchString: 'script OR javascript OR "alert(" OR "onload=" OR "onerror=" OR "onclick=" OR "eval("',
+                searchString: 'status=400 OR "script" OR "javascript" OR "alert(" OR "onload=" OR "onerror="',
                 filters: [
                     { field: 'status', operator: '>=', value: '400' }
                 ]
             },
             'file-upload-attacks': {
                 searchCommand: 'search',
-                index: 'web',
-                sourcetype: 'web_access',
+                index: 'main',
+                sourcetype: 'access_combined',
                 timeRange: 'earliest=-24h latest=now',
-                searchString: 'upload OR "file upload" OR ".php" OR ".jsp" OR ".asp" OR ".exe" OR ".bat" OR ".sh"',
+                searchString: 'method=POST OR "upload" OR ".php" OR ".jsp" OR ".asp" OR ".exe" OR ".bat"',
                 filters: [
                     { field: 'method', operator: '=', value: 'POST' }
                 ]
             },
             'directory-traversal': {
                 searchCommand: 'search',
-                index: 'web',
-                sourcetype: 'web_access OR web_error',
+                index: 'main',
+                sourcetype: 'access_combined OR web_error',
                 timeRange: 'earliest=-24h latest=now',
-                searchString: '.. OR "../" OR "..\\" OR "path traversal" OR "directory traversal" OR "../../"',
+                searchString: 'status=404 OR ".." OR "../" OR "..\\" OR "path traversal" OR "../../"',
                 filters: [
                     { field: 'status', operator: '>=', value: '400' }
                 ]
             },
             'api-abuse': {
                 searchCommand: 'search',
-                index: 'web',
-                sourcetype: 'web_access OR api_logs',
+                index: 'main',
+                sourcetype: 'access_combined OR api_logs',
                 timeRange: 'earliest=-24h latest=now',
-                searchString: 'api OR "rate limit" OR "throttling" OR "abuse" OR "excessive requests"',
+                searchString: 'status=429 OR "rate limit" OR "throttling" OR "abuse" OR "excessive requests"',
                 filters: [
                     { field: 'status', operator: '=', value: '429' }
                 ]
             },
             'bot-traffic': {
                 searchCommand: 'search',
-                index: 'web',
-                sourcetype: 'web_access',
+                index: 'main',
+                sourcetype: 'access_combined',
                 timeRange: 'earliest=-24h latest=now',
                 searchString: 'bot OR crawler OR spider OR "user agent" OR "automated" OR "scraper"',
                 filters: [
-                    { field: 'user_agent', operator: '=', value: 'bot' }
+                    { field: 'http_user_agent', operator: 'MATCHES', value: '.*bot.*' }
                 ]
             },
 
