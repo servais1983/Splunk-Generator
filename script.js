@@ -886,7 +886,7 @@ class SPLGenerator {
                 searchCommand: 'search',
                 index: 'main',
                 sourcetype: 'WinEventLog:Security OR WinEventLog:System OR Sysmon',
-                timeRange: 'earliest=-24h latest=now',
+                timeRange: '-24h',
                 searchString: 'EventCode=1116 OR EventCode=1117 OR EventCode=1118 OR "malware" OR "virus" OR "trojan" OR "quarantine"',
                 filters: [
                     { field: 'EventCode', operator: 'IN', value: '1116,1117,1118,8003,8004' }
@@ -896,7 +896,7 @@ class SPLGenerator {
                 searchCommand: 'search',
                 index: 'security',
                 sourcetype: 'windows_security OR linux_syslog',
-                timeRange: 'earliest=-24h latest=now',
+                timeRange: '-24h',
                 searchString: 'login OR authentication OR "user logon" OR "successful logon" OR "failed logon"',
                 filters: [
                     { field: 'status', operator: '=', value: 'success' }
@@ -906,7 +906,7 @@ class SPLGenerator {
                 searchCommand: 'search',
                 index: 'main',
                 sourcetype: 'WinEventLog:Security OR access_combined',
-                timeRange: 'earliest=-24h latest=now',
+                timeRange: '-24h',
                 searchString: 'EventCode=4625 OR EventCode=4771 OR status=401 OR status=403',
                 filters: [
                     { field: 'EventCode', operator: 'IN', value: '4625,4771' }
@@ -916,7 +916,7 @@ class SPLGenerator {
                 searchCommand: 'search',
                 index: 'security',
                 sourcetype: 'windows_security OR linux_syslog',
-                timeRange: 'earliest=-7d latest=now',
+                timeRange: '-7d',
                 searchString: 'privilege OR elevation OR "run as administrator" OR sudo OR su OR "user rights" OR "security log"',
                 filters: [
                     { field: 'action', operator: '=', value: 'elevation' }
@@ -926,7 +926,7 @@ class SPLGenerator {
                 searchCommand: 'search',
                 index: 'main',
                 sourcetype: 'web_access OR network_traffic',
-                timeRange: 'earliest=-24h latest=now',
+                timeRange: '-24h',
                 searchString: 'large download OR "file transfer" OR "data export" OR "bulk download" OR "mass download"',
                 filters: [
                     { field: 'bytes', operator: '>', value: '10000000' }
@@ -936,7 +936,7 @@ class SPLGenerator {
                 searchCommand: 'search',
                 index: 'main',
                 sourcetype: 'Sysmon OR WinEventLog:Security',
-                timeRange: 'earliest=-24h latest=now',
+                timeRange: '-24h',
                 searchString: 'EventCode=1 OR "cmd.exe" OR "powershell.exe" OR "process creation"',
                 filters: [
                     { field: 'Image', operator: 'MATCHES', value: '.*\\.(exe|bat|ps1)$' }
@@ -946,7 +946,7 @@ class SPLGenerator {
                 searchCommand: 'search',
                 index: 'main',
                 sourcetype: 'WinEventLog:Security OR Sysmon',
-                timeRange: 'earliest=-24h latest=now',
+                timeRange: '-24h',
                 searchString: 'EventCode=4624 OR EventCode=4625 OR "psexec" OR "wmic" OR "remote desktop"',
                 filters: [
                     { field: 'LogonType', operator: 'IN', value: '3,8,9,10' }
@@ -956,7 +956,7 @@ class SPLGenerator {
                 searchCommand: 'search',
                 index: 'main',
                 sourcetype: 'WinEventLog:Security OR WinEventLog:System OR Sysmon',
-                timeRange: 'earliest=-7d latest=now',
+                timeRange: '-7d',
                 searchString: 'EventCode=13 OR EventCode=14 OR EventCode=106 OR EventCode=7045 OR "registry" OR "scheduled task"',
                 filters: [
                     { field: 'EventCode', operator: 'IN', value: '13,14,106,7045' }
@@ -968,7 +968,7 @@ class SPLGenerator {
                 searchCommand: 'search',
                 index: 'main',
                 sourcetype: 'access_combined OR firewall',
-                timeRange: 'earliest=-1h latest=now',
+                timeRange: '-1h',
                 searchString: 'status=444 OR status=445 OR status=446 OR "port scan" OR "connection attempt"',
                 filters: [
                     { field: 'status', operator: '>=', value: '400' }
@@ -978,7 +978,7 @@ class SPLGenerator {
                 searchCommand: 'search',
                 index: 'main',
                 sourcetype: 'access_combined OR firewall',
-                timeRange: 'earliest=-1h latest=now',
+                timeRange: '-1h',
                 searchString: 'status=429 OR status=503 OR "rate limit" OR "connection flood" OR "DDoS"',
                 filters: [
                     { field: 'status', operator: 'IN', value: '429,503,444' }
@@ -988,7 +988,7 @@ class SPLGenerator {
                 searchCommand: 'search',
                 index: 'main',
                 sourcetype: 'WinEventLog:Security OR access_combined',
-                timeRange: 'earliest=-24h latest=now',
+                timeRange: '-24h',
                 searchString: 'EventCode=4624 OR "VPN" OR "virtual private network" OR "tunnel"',
                 filters: [
                     { field: 'LogonType', operator: '=', value: '7' }
@@ -998,7 +998,7 @@ class SPLGenerator {
                 searchCommand: 'search',
                 index: 'main',
                 sourcetype: 'firewall OR access_combined',
-                timeRange: 'earliest=-24h latest=now',
+                timeRange: '-24h',
                 searchString: 'status=403 OR status=444 OR "firewall" OR "access denied" OR "blocked"',
                 filters: [
                     { field: 'status', operator: 'IN', value: '403,444,445' }
@@ -1008,7 +1008,7 @@ class SPLGenerator {
                 searchCommand: 'search',
                 index: 'main',
                 sourcetype: 'access_combined OR web_access',
-                timeRange: 'earliest=-24h latest=now',
+                timeRange: '-24h',
                 searchString: 'X-Forwarded-For OR "via proxy" OR "proxy server" OR "forwarded"',
                 filters: [
                     { field: 'http_user_agent', operator: 'MATCHES', value: '.*proxy.*' }
@@ -1018,7 +1018,7 @@ class SPLGenerator {
                 searchCommand: 'search',
                 index: 'main',
                 sourcetype: 'access_combined OR web_access',
-                timeRange: 'earliest=-24h latest=now',
+                timeRange: '-24h',
                 searchString: 'tor OR "onion router" OR "exit node" OR "tor network"',
                 filters: [
                     { field: 'http_user_agent', operator: 'MATCHES', value: '.*tor.*' }
@@ -1030,7 +1030,7 @@ class SPLGenerator {
                 searchCommand: 'search',
                 index: 'main',
                 sourcetype: 'access_combined OR web_error',
-                timeRange: 'earliest=-24h latest=now',
+                timeRange: '-24h',
                 searchString: 'status=500 OR "union select" OR "drop table" OR "insert into" OR "or 1=1" OR "or true"',
                 filters: [
                     { field: 'status', operator: '>=', value: '400' }
@@ -1040,7 +1040,7 @@ class SPLGenerator {
                 searchCommand: 'search',
                 index: 'main',
                 sourcetype: 'access_combined OR web_error',
-                timeRange: 'earliest=-24h latest=now',
+                timeRange: '-24h',
                 searchString: 'status=400 OR "script" OR "javascript" OR "alert(" OR "onload=" OR "onerror="',
                 filters: [
                     { field: 'status', operator: '>=', value: '400' }
@@ -1050,7 +1050,7 @@ class SPLGenerator {
                 searchCommand: 'search',
                 index: 'main',
                 sourcetype: 'access_combined',
-                timeRange: 'earliest=-24h latest=now',
+                timeRange: '-24h',
                 searchString: 'method=POST OR "upload" OR ".php" OR ".jsp" OR ".asp" OR ".exe" OR ".bat"',
                 filters: [
                     { field: 'method', operator: '=', value: 'POST' }
@@ -1060,7 +1060,7 @@ class SPLGenerator {
                 searchCommand: 'search',
                 index: 'main',
                 sourcetype: 'access_combined OR web_error',
-                timeRange: 'earliest=-24h latest=now',
+                timeRange: '-24h',
                 searchString: 'status=404 OR ".." OR "../" OR "..\\" OR "path traversal" OR "../../"',
                 filters: [
                     { field: 'status', operator: '>=', value: '400' }
@@ -1070,7 +1070,7 @@ class SPLGenerator {
                 searchCommand: 'search',
                 index: 'main',
                 sourcetype: 'access_combined OR api_logs',
-                timeRange: 'earliest=-24h latest=now',
+                timeRange: '-24h',
                 searchString: 'status=429 OR "rate limit" OR "throttling" OR "abuse" OR "excessive requests"',
                 filters: [
                     { field: 'status', operator: '=', value: '429' }
@@ -1080,7 +1080,7 @@ class SPLGenerator {
                 searchCommand: 'search',
                 index: 'main',
                 sourcetype: 'access_combined',
-                timeRange: 'earliest=-24h latest=now',
+                timeRange: '-24h',
                 searchString: 'bot OR crawler OR spider OR "user agent" OR "automated" OR "scraper"',
                 filters: [
                     { field: 'http_user_agent', operator: 'MATCHES', value: '.*bot.*' }
@@ -1092,7 +1092,7 @@ class SPLGenerator {
                 searchCommand: 'search',
                 index: 'main',
                 sourcetype: 'web_error OR application_logs OR system_logs',
-                timeRange: 'earliest=-24h latest=now',
+                timeRange: '-24h',
                 searchString: 'ERROR OR error OR Error OR "error" OR "ERROR" OR "exception" OR "failure"',
                 filters: [
                     { field: 'status', operator: '>=', value: '400' }
@@ -1102,7 +1102,7 @@ class SPLGenerator {
                 searchCommand: 'tstats',
                 index: 'performance',
                 sourcetype: '',
-                timeRange: 'earliest=-4h latest=now',
+                timeRange: '-4h',
                 searchString: '',
                 statsFunction: 'avg',
                 statsField: 'cpu_usage',
@@ -1114,7 +1114,7 @@ class SPLGenerator {
                 searchCommand: 'search',
                 index: 'system',
                 sourcetype: 'system_metrics OR performance',
-                timeRange: 'earliest=-24h latest=now',
+                timeRange: '-24h',
                 searchString: 'disk OR "disk usage" OR "disk space" OR "storage" OR "capacity"',
                 filters: [
                     { field: 'usage_percent', operator: '>', value: '80' }
@@ -1124,7 +1124,7 @@ class SPLGenerator {
                 searchCommand: 'search',
                 index: 'system',
                 sourcetype: 'system_metrics OR performance',
-                timeRange: 'earliest=-24h latest=now',
+                timeRange: '-24h',
                 searchString: 'memory OR "memory usage" OR "RAM" OR "virtual memory"',
                 filters: [
                     { field: 'memory_usage', operator: '>', value: '90' }
@@ -1134,7 +1134,7 @@ class SPLGenerator {
                 searchCommand: 'search',
                 index: 'system',
                 sourcetype: 'service_logs OR system_logs',
-                timeRange: 'earliest=-24h latest=now',
+                timeRange: '-24h',
                 searchString: 'service OR "service status" OR "service stopped" OR "service failed" OR "service error"',
                 filters: [
                     { field: 'status', operator: '=', value: 'stopped' },
@@ -1145,7 +1145,7 @@ class SPLGenerator {
                 searchCommand: 'search',
                 index: 'system',
                 sourcetype: 'process_logs OR system_logs',
-                timeRange: 'earliest=-24h latest=now',
+                timeRange: '-24h',
                 searchString: 'process OR "process creation" OR "process termination" OR "new process"',
                 filters: [
                     { field: 'action', operator: '=', value: 'create' }
@@ -1157,7 +1157,7 @@ class SPLGenerator {
                 searchCommand: 'stats',
                 index: 'main',
                 sourcetype: 'access_combined OR web_access',
-                timeRange: 'earliest=-7d latest=now',
+                timeRange: '-7d',
                 searchString: '',
                 statsFunction: 'count',
                 statsField: '',
@@ -1169,7 +1169,7 @@ class SPLGenerator {
                 searchCommand: 'stats',
                 index: 'main',
                 sourcetype: 'access_combined OR web_access',
-                timeRange: 'earliest=-24h latest=now',
+                timeRange: '-24h',
                 searchString: '',
                 statsFunction: 'count',
                 statsField: '',
